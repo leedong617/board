@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>paging</title>
+    <meta charset="UTF-8">
+    <style>
+        .pagination {
+            display: flex;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination a, .pagination span {
+            text-decoration: none;
+            padding: 8px 16px;
+            color: #007bff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+        }
+
+        .pagination a:hover {
+            background-color: #e9ecef;
+        }
+
+        .pagination .current {
+            font-weight: bold;
+            color: #495057;
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>writer</th>
+            <th>date</th>
+            <th>hits</th>
+        </tr>
+        <tr th:each="board : ${boardList}">
+            <td th:text="${board.id}"></td>
+            <td>
+                <a th:href="@{'/detail?id=' + ${board.id} + '&page=' + ${paging.page}}" th:text="${board.boardTitle}"></a>
+            </td>
+            <td th:text="${board.boardWriter}"></td>
+            <td th:text="${board.createdAt}"></td>
+            <td th:text="${board.boardHits}"></td>
+        </tr>
+    </table>
+</div>
+
+<div>
+    <ul class="pagination">
+        <li th:if="${paging.page <= 1}">
+            <span>[이전]</span>
+        </li>
+        <li th:if="${paging.page > 1}">
+            <a th:href="@{/paging(page=${paging.page - 1})}">[이전]</a>
+        </li>
+
+        <li th:each="i : ${#numbers.sequence(paging.startPage, paging.endPage)}">
+            <span th:if="${i == paging.page}" th:text="${i}" class="current"></span>
+            <a th:if="${i != paging.page}" th:href="@{/paging(page=${i})}" th:text="${i}"></a>
+        </li>
+
+        <li th:if="${paging.page >= paging.maxPage}">
+            <span>[다음]</span>
+        </li>
+        <li th:if="${paging.page < paging.maxPage}">
+            <a th:href="@{/paging(page=${paging.page + 1})}">[다음]</a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

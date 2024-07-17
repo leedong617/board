@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <typeAliases>
+        <!--board-mapper에서 타입을 명시한 alias로 사용하기위함
+        가독성 향상, 유지보수 용이성, 타이핑 오류 감소 장점
+        전체 클래스 경로 com.project.board.dto.BoardDTO를 반복해서 작성할 필요가 없어짐-->
+        <typeAlias type="com.project.board.dto.BoardDTO" alias="board"></typeAlias>
+        <typeAlias type="com.project.board.dto.BoardFileDTO" alias="boardFile"></typeAlias>
+    </typeAliases>
+</configuration>

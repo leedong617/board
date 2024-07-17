@@ -1,0 +1,21 @@
+# server port
+server:
+  port: 8080
+
+# database
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/community?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: Abcd123@
+
+  servlet:
+    multipart:
+      maxFileSize: 10MB # ?? ??? ?? ??
+      maxRequestSize: 30MB  # ? ?? ?? ??? ?? ??
+
+# mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  config-location: classpath:mybatis-config.xml
