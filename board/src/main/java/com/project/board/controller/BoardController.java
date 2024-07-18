@@ -2,8 +2,11 @@ package com.project.board.controller;
 
 import com.project.board.dto.BoardDTO;
 import com.project.board.dto.BoardFileDTO;
+import com.project.board.dto.CommentDTO;
 import com.project.board.dto.PageDTO;
 import com.project.board.service.BoardService;
+import com.project.board.service.CommentService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.stereotype.Controller;
@@ -17,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping("/save")
     public String save() {
@@ -55,6 +59,8 @@ public class BoardController {
             List<BoardFileDTO> boardFileDTOList = boardService.findFile(id);
             model.addAttribute("boardFileList", boardFileDTOList);
         }
+        List<CommentDTO> commentDTOList = commentService.findAll(id);
+        model.addAttribute("commentList", commentDTOList);
         return "detail";
     }
 
