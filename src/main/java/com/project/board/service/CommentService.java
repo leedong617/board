@@ -12,14 +12,14 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-	private final CommentMapper commentRepository;
+	private final CommentMapper commentMapper;
 
 	public void save(CommentDTO commentDTO) {
-		commentRepository.save(commentDTO);
+		commentMapper.save(commentDTO);
 		
 	}
 
 	public List<CommentDTO> findAll(Long boardId) {
-		return commentRepository.findAll(boardId);
+		return commentMapper.findAll(boardId);
 	}
 }
