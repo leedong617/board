@@ -48,6 +48,10 @@ public class BoardController {
                            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
                            Model model) {
         // 조회수 처리
+    	if(boardService.findById(id)==null) {
+    		// 삭제 한 뒤 뒤로가기 눌렀을 경우 새로고침을 누르면 오류가 나는 것을 예외처리
+    		return "redirect:/paging";
+    	}else {
         boardService.updateHits(id);
         // 상세내용 가져옴
         BoardDTO boardDTO = boardService.findById(id);
@@ -62,27 +66,33 @@ public class BoardController {
         List<CommentDTO> commentDTOList = commentService.findAll(id);
         model.addAttribute("commentList", commentDTOList);
         return "detail";
+    	}
     }
 
     @GetMapping("update/{id}")
-    public String update(@PathVariable("id") Long id, Model model) {
+    public String update(@PathVariable("id") Long id,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page, // page 파라미터를 받아옴
+            Model model) {
         BoardDTO boardDTO = boardService.findById(id);
         model.addAttribute("board", boardDTO);
+        model.addAttribute("page", page); // page 값을 다시 넘겨줌
         return "update";
     }
 
     @PostMapping("/update/{id}")
-    public String update(BoardDTO boardDTO, Model model) {
-        boardService.update(boardDTO);
-        BoardDTO dto = boardService.findById(boardDTO.getId());
-        model.addAttribute("board", dto);
-        return "detail";
-    }
+    public String update(BoardDTO boardDTO, @RequestParam("page") int page,  // page 파라미터를 받아옴
+            Model model) {
+		boardService.update(boardDTO);
+		BoardDTO dto = boardService.findById(boardDTO.getId());
+		model.addAttribute("board", dto);
+		model.addAttribute("page", page);  // page 값을 다시 넘겨줌
+		return "redirect:/detail?id=" + boardDTO.getId() + "&page=" + page;
+	}
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
+    public String delete(@PathVariable("id") Long id) {
         boardService.delete(id);
-        return "redirect:/list";
+        return "redirect:/paging";
     }
 
     @GetMapping("/paging")

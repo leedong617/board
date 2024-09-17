@@ -3,7 +3,8 @@ package com.project.board.service;
 import com.project.board.dto.BoardDTO;
 import com.project.board.dto.BoardFileDTO;
 import com.project.board.dto.PageDTO;
-import com.project.board.repository.BoardRepository;
+import com.project.board.mapper.BoardMapper;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,19 +18,20 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class BoardService {
-    private final BoardRepository boardRepository;
+    private final BoardMapper boardMapper;
 
 
     public void save(BoardDTO boardDTO) throws IOException {
         if (boardDTO.getBoardFile().get(0).isEmpty()) {
             // 파일 없다.
             boardDTO.setFileAttached(0);
-            boardRepository.save(boardDTO);
+            boardMapper.save(boardDTO);
         } else {
             // 파일 있다.
             boardDTO.setFileAttached(1);
             // 게시글 저장 후 id값 활용을 위해 리턴 받음.
-            BoardDTO savedBoard = boardRepository.save(boardDTO);
+            boardMapper.save(boardDTO);
+            BoardDTO savedBoard = boardMapper.findById(boardDTO.getId());
             // 파일만 따로 가져오기
             for (MultipartFile boardFile: boardDTO.getBoardFile()) {
                 // 파일 이름 가져오기
@@ -48,33 +50,33 @@ public class BoardService {
                 String savePath = "C:/uploadFiles/" + storedFileName;
                 boardFile.transferTo(new File(savePath));
                 // board_file_table 저장 처리
-                boardRepository.saveFile(boardFileDTO);
+                boardMapper.saveFile(boardFileDTO);
             }
         }
     }
 
     public List<BoardDTO> findAll() {
-        return boardRepository.findAll();
+        return boardMapper.findAll();
     }
 
     public void updateHits(Long id) {
-        boardRepository.updateHits(id);
+        boardMapper.updateHits(id);
     }
 
     public BoardDTO findById(Long id) {
-        return boardRepository.findById(id);
+        return boardMapper.findById(id);
     }
 
     public void update(BoardDTO boardDTO) {
-        boardRepository.update(boardDTO);
+        boardMapper.update(boardDTO);
     }
 
     public void delete(Long id) {
-        boardRepository.delete(id);
+        boardMapper.delete(id);
     }
 
     public List<BoardFileDTO> findFile(Long id) {
-        return boardRepository.findFile(id);
+        return boardMapper.findFile(id);
     }
 
     int pageLimit = 10; // 한 페이지당 보여줄 글 갯수
@@ -84,12 +86,12 @@ public class BoardService {
         Map<String, Integer> pagingParams = new HashMap<>();
         pagingParams.put("start", pagingStart);
         pagingParams.put("limit", pageLimit);
-        List<BoardDTO> pagingList = boardRepository.pagingList(pagingParams);
+        List<BoardDTO> pagingList = boardMapper.pagingList(pagingParams);
         return pagingList;
     }
     public PageDTO pagingParam(int page) {
         // 전체 글 갯수 조회
-        int boardCount = boardRepository.boardCount();
+        int boardCount = boardMapper.boardCount();
         // 전체 페이지 갯수 계산(10/3=3.33333 => 4)
         int maxPage = (int) (Math.ceil((double) boardCount / pageLimit));
         // 시작 페이지 값 계산(1, 4, 7, 10, ~~~~)

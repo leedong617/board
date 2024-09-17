@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-<form th:action="@{|/update/${board.id}|}" method="post" name="updateForm">
+<form th:action="@{|/update/${board.id}?page=${page}|}" method="post" name="updateForm">
     <input type="hidden" name="id" th:value="${board.id}">
     writer: <input type="text" name="boardWriter" th:value="${board.boardWriter}" readonly><br>
     title: <input type="text" name="boardTitle" th:value="${board.boardTitle}"><br>
